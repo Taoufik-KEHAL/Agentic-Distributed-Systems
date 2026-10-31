@@ -1,6 +1,9 @@
 package ma.enset.comptes.web;
 
+import ma.enset.comptes.dtos.CompteRequestDTO;
+import ma.enset.comptes.dtos.CompteResponseDTO;
 import ma.enset.comptes.entities.Compte;
+import ma.enset.comptes.mappers.CompteMapper;
 import ma.enset.comptes.repositories.CompteRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,36 +15,43 @@ import java.util.List;
 public class CompteRestController {
 
     private final CompteRepository compteRepository;
+    private final CompteMapper compteMapper;
 
-    public CompteRestController(CompteRepository compteRepository) {
+    public CompteRestController(CompteRepository compteRepository, CompteMapper compteMapper) {
         this.compteRepository = compteRepository;
+        this.compteMapper = compteMapper;
     }
 
     @GetMapping("/comptes")
-    public List<Compte> getAll() {
-        return compteRepository.findAll();
+    public List<CompteResponseDTO> getAll() {
+        return compteRepository.findAll()
+                .stream()
+                .map(compteMapper::fromCompte)
+                .toList();
     }
 
     @GetMapping("/comptes/{id}")
-    public Compte getById(@PathVariable Long id) {
-        return compteRepository.findById(id)
+    public CompteResponseDTO getById(@PathVariable Long id) {
+        Compte compte = compteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Compte " + id + " introuvable"));
+        return compteMapper.fromCompte(compte);
     }
 
     @PostMapping("/comptes")
-    public Compte save(@RequestBody Compte compte) {
-        if (compte.getDateCreation() == null) compte.setDateCreation(LocalDate.now());
-        return compteRepository.save(compte);
+    public CompteResponseDTO save(@RequestBody CompteRequestDTO request) {
+        Compte compte = compteMapper.fromCompteRequestDTO(request);
+        compte.setDateCreation(LocalDate.now());
+        return compteMapper.fromCompte(compteRepository.save(compte));
     }
 
     @PutMapping("/comptes/{id}")
-    public Compte update(@PathVariable Long id, @RequestBody Compte compte) {
+    public CompteResponseDTO update(@PathVariable Long id, @RequestBody CompteRequestDTO request) {
         Compte existing = compteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Compte " + id + " introuvable"));
-        if (compte.getSolde() != null) existing.setSolde(compte.getSolde());
-        if (compte.getDevise() != null) existing.setDevise(compte.getDevise());
-        if (compte.getType() != null) existing.setType(compte.getType());
-        return compteRepository.save(existing);
+        if (request.getSolde() != null) existing.setSolde(request.getSolde());
+        if (request.getDevise() != null) existing.setDevise(request.getDevise());
+        if (request.getType() != null) existing.setType(request.getType());
+        return compteMapper.fromCompte(compteRepository.save(existing));
     }
 
     @DeleteMapping("/comptes/{id}")
