@@ -1,0 +1,6 @@
+{
+  "folders": [
+    { "path": "customer-service" },
+    { "path": "inventory-service" }
+  ]
+}
