@@ -12,5 +12,6 @@
     <modules>
         <module>customer-service</module>
         <module>inventory-service</module>
+        <module>gateway-service</module>
     </modules>
 </project>
