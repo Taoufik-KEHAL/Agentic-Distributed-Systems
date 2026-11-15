@@ -15,3 +15,4 @@ qui décrit les étapes réalisées et les captures d'écran des tests. Une acti
 | N° | Activité | Technologies | Dossier |
 |----|----------|--------------|---------|
 | 1 | Micro-service de gestion de comptes bancaires | Spring Boot 4, JPA, H2, REST, Spring Data REST, Swagger, GraphQL | [tp1-comptes-bancaires-service](./tp1-comptes-bancaires-service) |
+| 2 | Mise en œuvre d'une architecture micro-services | Spring Cloud Gateway, Eureka, OpenFeign, Config, Spring AI (MCP) | [tp2-micro-services](./tp2-micro-services) |
