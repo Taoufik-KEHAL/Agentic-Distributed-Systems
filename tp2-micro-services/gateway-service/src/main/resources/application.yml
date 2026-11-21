@@ -1,11 +1,17 @@
 spring:
   application:
     name: gateway-service
+  config:
+    import: optional:configserver:http://localhost:9999
   cloud:
     gateway:
       server:
         webflux:
           trusted-proxies: 127\.0\.0\.1|0:0:0:0:0:0:0:1
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
           routes:
             - id: r1
               uri: lb://CUSTOMER-SERVICE
@@ -15,17 +21,9 @@ spring:
               uri: lb://INVENTORY-SERVICE
               predicates:
                 - Path=/products/**
-          discovery:
-            locator:
-              enabled: true
-              lower-case-service-id: true
 server:
   port: 8888
 management:
-  endpoints:
-    web:
-      exposure:
-        include: health,gateway
   endpoint:
     gateway:
       access: read-only
