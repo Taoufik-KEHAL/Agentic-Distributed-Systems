@@ -16,5 +16,6 @@
         <module>discovery-service</module>
         <module>billing-service</module>
         <module>config-service</module>
+        <module>agent-service</module>
     </modules>
 </project>
